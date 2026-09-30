@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""トヨタレンタカー「片道GO!」の新着車両を検知して ntfy でスマホに通知する（GitHub Actions 用）．"""
-import html, json, os, re, sys, urllib.request
+"""トヨタレンタカー「片道GO!」の新着車両を検知して ntfy でスマホに通知する（GitHub Actions と Mac の両方で使う）．"""
+import html, json, os, re, subprocess, sys, urllib.request
 from datetime import datetime
 from pathlib import Path
 
@@ -43,6 +43,10 @@ def fetch_items():
 
 
 def notify(title, msg):
+    if sys.platform == "darwin":  # Mac で動かしたときは画面にも出す
+        script = 'display notification %s with title %s sound name "Glass"' % (
+            json.dumps(msg, ensure_ascii=False), json.dumps(title, ensure_ascii=False))
+        subprocess.run(["osascript", "-e", script])
     push(title, msg)
 
 
